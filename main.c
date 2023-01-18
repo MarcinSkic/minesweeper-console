@@ -9,9 +9,10 @@ enum gameState {pending,won,gameOver};
 
 enum gameState gameState = pending;
 int fieldsLeftToClear = 0;
-int minesNumber = 40;
-int rows = 16;
-int cols = 16;
+int minesNumber = 10;
+int rows = 8;
+int cols = 8;
+int extraTextLines = 3;
 
 enum fieldFlags fields[16][16];   //rows, cols
 
@@ -218,15 +219,11 @@ void visualizeMap(){
         }
         printf("\n");
     }
-
-    //CODE FOR NORMAL CONSOLES, DOESN'T WORK IN CLION
-    /*for(int i = 0; i < rows; i++){
-        printf("\033[A");
-    }
-    printf("\r");*/
 }
 
 void visualizeDiscoveredMap(){
+    printf("\n");
+
     for (int i = 0; i < rows; i++){
         for(int x = 0; x < cols; x++){
             showFieldSymbol(i,x,1);
@@ -234,19 +231,20 @@ void visualizeDiscoveredMap(){
         printf("\n");
     }
 
-    /*for(int i = 0; i < rows; i++){
+    printf("\n\n\n");
+}
+
+void returnCursorToTheTop(){
+    for(int i = 0; i < rows + extraTextLines; i++){
         printf("\033[A");
     }
-    printf("\r");*/
-
-    printf("\n\n\n");
+    printf("\r");
 }
 
 int main() {
     srand(time(NULL));
 
     generateMap();
-    visualizeDiscoveredMap();
 
     while(gameState == pending){
         printf("%d undiscovered fields left\n",fieldsLeftToClear);
@@ -300,6 +298,8 @@ int main() {
                 printf("Incorrect input\n");
                 break;
         }
+
+        returnCursorToTheTop();
     }
 
     visualizeDiscoveredMap();
@@ -309,6 +309,8 @@ int main() {
     } else {
         printf("You LOST!");
     }
+
+    char choice = fgetc(stdin); //To not close console immediately
 
     return 0;
 }
